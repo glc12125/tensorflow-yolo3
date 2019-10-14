@@ -77,7 +77,7 @@ class yolo:
         '''
         bn_layer = tf.layers.batch_normalization(inputs = input_layer,
             momentum = norm_decay, epsilon = norm_epsilon, center = True,
-            scale = True, training = training, name = name)
+            scale = True, training = training, name = name, reuse = tf.AUTO_REUSE)
         return tf.nn.leaky_relu(bn_layer, alpha = 0.1)
 
 
@@ -106,7 +106,7 @@ class yolo:
         conv = tf.layers.conv2d(
             inputs = inputs, filters = filters_num,
             kernel_size = kernel_size, strides = [strides, strides], kernel_initializer = tf.glorot_uniform_initializer(),
-            padding = ('SAME' if strides == 1 else 'VALID'), kernel_regularizer = tf.contrib.layers.l2_regularizer(scale = 5e-4), use_bias = use_bias, name = name)
+            padding = ('SAME' if strides == 1 else 'VALID'), kernel_regularizer = tf.contrib.layers.l2_regularizer(scale = 5e-4), use_bias = use_bias, name = name, reuse = tf.AUTO_REUSE)
         return conv
 
 

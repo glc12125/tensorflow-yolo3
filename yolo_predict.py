@@ -2,6 +2,7 @@ import os
 import config
 import random
 import colorsys
+import time
 import numpy as np
 import tensorflow as tf
 from model.yolo3_model import yolo
@@ -30,6 +31,7 @@ class yolo_predictor:
         random.seed(10101)
         random.shuffle(self.colors)
         random.seed(None)
+        self.model = yolo(config.norm_epsilon, config.norm_decay, self.anchors_path, self.classes_path, pre_train = False)
 
 
     def _get_class(self):
@@ -219,7 +221,8 @@ class yolo_predictor:
             scores: 物体概率值
             classes: 物体类别
         """
-        model = yolo(config.norm_epsilon, config.norm_decay, self.anchors_path, self.classes_path, pre_train = False)
-        output = model.yolo_inference(inputs, config.num_anchors // 3, config.num_classes, training = False)
+        start_time = time.time()
+        output = self.model.yolo_inference(inputs, config.num_anchors // 3, config.num_classes, training = False)
         boxes, scores, classes = self.eval(output, image_shape, max_boxes = 20)
+        print('Execution time {}'.format(time.time() - start_time))
         return boxes, scores, classes
